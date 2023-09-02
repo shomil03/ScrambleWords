@@ -1,6 +1,6 @@
 //
 //  ContentView.swift
-//  WordScramblE
+//  ScrambleWord
 //
 //  Created by Shomil Singh on 01/09/23.
 //
@@ -47,7 +47,18 @@ struct ContentView: View {
                     
                     
                 }
-                .navigationTitle(rootWord)
+                .navigationTitle(Text(rootWord))
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar(){
+                    ToolbarItem(placement: .principal)
+                    {
+                        
+                        Text(rootWord)
+                        .font(.largeTitle)
+                        
+                    }
+                }
+            
                 .toolbar(){
                     ToolbarItemGroup(placement: .bottomBar)
                     {
@@ -108,7 +119,7 @@ struct ContentView: View {
 
     }
     func count(word:String) -> Bool{
-        if(word.count<=3){
+        if(word.count<=1){
             return false
             
         }
@@ -149,7 +160,7 @@ struct ContentView: View {
             return
         }
         guard count(word: newWord)else{
-            ErrorType(title: "Insufficient length", message: "Word should be bigger than 3 letter")
+            ErrorType(title: "Insufficient length", message: "Word should be larger than a letter")
             return
         }
         guard startingWord(word: newWord)else{

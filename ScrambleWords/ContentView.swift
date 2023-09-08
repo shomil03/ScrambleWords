@@ -82,7 +82,10 @@ struct ContentView: View {
                         Text("\(countdownTimer)")
                             .onReceive(timer){ _ in
                                 if(countdownTimer>0){
-                                    countdownTimer-=1
+                                    withAnimation(){
+                                        countdownTimer-=1
+                                    }
+                                    
                                 }
                                     
                                 else{

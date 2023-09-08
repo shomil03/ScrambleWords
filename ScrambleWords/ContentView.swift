@@ -16,6 +16,7 @@ struct ContentView: View {
     @State private var ErrorMessage = ""
     @State private var score=0
     @State private var countdownTimer = 15
+    @FocusState private var isfocused : Bool
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     var body: some View {
         NavigationView{
@@ -24,6 +25,8 @@ struct ContentView: View {
                         TextField("Enter new word", text: $newWord)
                             .autocapitalization(.none)
                             .onSubmit(addWord)
+                            .keyboardType(.asciiCapable)
+                            .focused($isfocused)
                     }
                     
                     Section{
@@ -106,6 +109,14 @@ struct ContentView: View {
                             }
                             .opacity(countdownTimer == 0 ? 0 : 1)
                             .scaleEffect(countdownTimer == 0 ? 1.2 : 1)
+                            .toolbar(){
+                                ToolbarItem(placement: .keyboard){
+                                    Button("Done"){
+                                        isfocused = false
+                                    }
+                                    
+                                }
+                            }
                            
                             .padding()
                             

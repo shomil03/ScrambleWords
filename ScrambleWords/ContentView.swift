@@ -15,7 +15,7 @@ struct ContentView: View {
     @State private var ErrorTitle = ""
     @State private var ErrorMessage = ""
     @State private var score=0
-    @State private var countdownTimer = 120
+    @State private var countdownTimer = 15
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     var body: some View {
         NavigationView{
@@ -46,7 +46,8 @@ struct ContentView: View {
             }
                 .navigationTitle(Text(rootWord))
                 .navigationBarTitleDisplayMode(.inline)
-                .animation(.interpolatingSpring(stiffness: 10, damping: 2), value: rootWord)
+                .opacity(countdownTimer == 0 ? 0.3 : 1)
+                
                 .toolbar(){
                     ToolbarItem(placement: .principal)
                     {
@@ -63,10 +64,15 @@ struct ContentView: View {
                         
                         Button("New word"){
                             clearList()
-                            startGame()
+                            countdownTimer = 0
+                            withAnimation(.default){
+                                startGame()
+                                }
+                            
                             
                         }
                         .foregroundColor(Color.green)
+                        
                         
                     }
                     
@@ -78,14 +84,23 @@ struct ContentView: View {
                                 if(countdownTimer>0){
                                     countdownTimer-=1
                                 }
+                                    
                                 else{
                                     
-                                    
+                                    withAnimation(.default){
+                                        
                                         startGame()
-                                        countdownTimer = 60
+                                        countdownTimer = 15
+                                        
+                                    }
+                                        
+                                        
                                     
                                 }
+                                    
                             }
+                            .opacity(countdownTimer == 0 ? 0 : 1)
+                            .scaleEffect(countdownTimer == 0 ? 1.2 : 1)
                            
                             .padding()
                             
@@ -97,6 +112,7 @@ struct ContentView: View {
                 
                 
                 .onAppear(perform: startGame)
+                
                 .alert(ErrorTitle, isPresented: $showingError)
                 {
                     Button("Ok",role: .cancel){}
@@ -128,7 +144,7 @@ struct ContentView: View {
     func startGame(){
 //        newWord.removeAll()
         clearList()
-        countdownTimer = 120
+        countdownTimer = 15
         score=0
         if let startURL = Bundle.main.url(forResource: "start", withExtension: "txt"){
             if let startcontent = try? String(contentsOf: startURL){

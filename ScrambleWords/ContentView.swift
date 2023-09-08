@@ -15,12 +15,11 @@ struct ContentView: View {
     @State private var ErrorTitle = ""
     @State private var ErrorMessage = ""
     @State private var score=0
+    @State private var countdownTimer = 120
+    let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     var body: some View {
         NavigationView{
-           
-                
-                
-                List{
+            List{
                     Section{
                         TextField("Enter new word", text: $newWord)
                             .autocapitalization(.none)
@@ -43,12 +42,11 @@ struct ContentView: View {
                             .frame(maxWidth: .infinity)
                         
                     }
-                    
-                    
-                    
-                }
+                
+            }
                 .navigationTitle(Text(rootWord))
                 .navigationBarTitleDisplayMode(.inline)
+                .animation(.interpolatingSpring(stiffness: 10, damping: 2), value: rootWord)
                 .toolbar(){
                     ToolbarItem(placement: .principal)
                     {
@@ -60,15 +58,38 @@ struct ContentView: View {
                 }
             
                 .toolbar(){
-                    ToolbarItemGroup(placement: .bottomBar)
+                    ToolbarItem(placement: .navigationBarTrailing)
                     {
                         
-                        Button("New word!"){
+                        Button("New word"){
                             clearList()
                             startGame()
                             
                         }
+                        .foregroundColor(Color.green)
                         
+                    }
+                    
+                }
+                .toolbar(){
+                    ToolbarItem(placement: .navigationBarLeading ){
+                        Text("\(countdownTimer)")
+                            .onReceive(timer){ _ in
+                                if(countdownTimer>0){
+                                    countdownTimer-=1
+                                }
+                                else{
+                                    
+                                    
+                                        startGame()
+                                        countdownTimer = 60
+                                    
+                                }
+                            }
+                           
+                            .padding()
+                            
+                            
                         
                     }
                 }
@@ -106,6 +127,8 @@ struct ContentView: View {
     }
     func startGame(){
 //        newWord.removeAll()
+        clearList()
+        countdownTimer = 120
         score=0
         if let startURL = Bundle.main.url(forResource: "start", withExtension: "txt"){
             if let startcontent = try? String(contentsOf: startURL){
@@ -177,7 +200,7 @@ struct ContentView: View {
         }
        
         guard newWord.count>0 else {return }
-        withAnimation{
+        withAnimation(){
             usedWords.insert(newWord, at: 0)
             }
         addscore(word: newWord)

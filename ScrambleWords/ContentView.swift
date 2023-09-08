@@ -38,10 +38,12 @@ struct ContentView: View {
                         
                     }
                     Section{
+                        
                         Text("Score : \(score)")
                             .frame(maxWidth: .infinity)
                         
                     }
+                    
                 
             }
                 .navigationTitle(Text(rootWord))
@@ -113,7 +115,7 @@ struct ContentView: View {
                 }
                 
                 
-                
+                .animation(.spring(), value: score)
                 .onAppear(perform: startGame)
                 
                 .alert(ErrorTitle, isPresented: $showingError)
@@ -145,6 +147,7 @@ struct ContentView: View {
         usedWords.removeAll()
     }
     func startGame(){
+        newWord=""
 //        newWord.removeAll()
         clearList()
         countdownTimer = 15
